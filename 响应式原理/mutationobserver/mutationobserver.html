@@ -1,0 +1,100 @@
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>mutationobserver</title>
+        <style>
+            #container{
+                background-color: #2f90b9;
+            }
+            #container div{
+                height: 50px;
+            }
+        </style>
+        <script src="./observerDom.js"></script>
+    </head>
+    <body>
+        <div id="container">
+            <div class="child"></div>
+        </div>
+        <button id="update">
+            changes
+        </button>
+<!--         这样设计是为了应付 DOM 变动频繁的特点。举例来说，如果文档中连续插入1000个<p>元素，就会连续触发1000个插入事件，
+        执行每个事件的回调函数， 这很可能造成浏览器的卡顿、
+        ；而 Mutation Observer 完全不同，只在1000个段落都插入结束后才会触发，而且只触发一次。
+ --><!-- 
+    mutationobserver:用来监听DOM变动。DOM的任何变动，如节点增减、属性更改、内容变动都会触发该事件
+
+    特点:
+    1、异步触发方式（等所有脚本任务完成后才运行）
+    2、它把DOM变动记录封装成一个数组进行处理，而不是一条条个别处理DOM变动
+    3、它既可以观察DOM的所有类型变动，也可以指定只观察某一类变动
+                    
+    -->
+        <script>
+            // 构造函数 MutationObserver
+            
+            // var observer = new MutationObserver(function(mutationRecoards,observer){
+                // mutationRecoards 变动数组
+                // observer 观察者实例
+            // })
+            
+            // 实例方法 
+
+            // 开始监听
+            // observe(node,{
+                // childList:true, 子节点的变动
+                // attributes:true,属性的变动
+                // characterData:true,节点内容或文本变动
+                // subtree:true,是否将观察器应用于该节点的所有后代节点
+                // attributeOldValue:true,观察属性变动时，是否记录变动前的值
+                // attributeFilter:[]需要观察的特定属性//['calss','src']
+            // })
+            // 停止观察
+            // disconnect()
+            // 清除变动记录
+            // takeRecords()
+            
+            // MutationRecord对象
+/*             {
+                type:观察的变动类型
+                target:发生变动的dom节点
+                addedNodes 新增的dom节点
+                removedNodes 
+                previousSibling 
+                nextSibling
+                attributeName
+                oldValue
+            }
+ */
+            var MutationObserver = window.MutationObserver||window.webkitMutationObserver||window.MozMutationObserver
+            const container = document.getElementById('container')
+            const button = document.getElementById('update')
+            const options ={
+                attributes:true,
+                childList:true
+            }
+            // 创建mutationobserver实例，返回一个观察者对象
+            const mutation = new MutationObserver(function(mutationRecoards,observer){
+                // console.log('mutationRecoards',mutationRecoards);
+                // console.log('observer',observer);
+                // dosomething...
+                mutation.disconnect()
+            })
+
+            mutation.observe(container,options)
+
+            button.addEventListener('click',function(){
+                container.innerText = 'changed container'
+                container.style.background = 'cyan'
+                for(var i = 0;i<3;i++){
+                    container.appendChild(document.createElement('div'))
+                }
+            })
+            
+        </script>
+    </body>
+    </html>
